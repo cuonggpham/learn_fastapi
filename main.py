@@ -1,18 +1,18 @@
 from typing import Optional
 from fastapi import FastAPI 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, EmailStr
 
 app = FastAPI() 
 
 class Product(BaseModel):
-    name: str
-    price: float
-    in_stock: bool 
+    name: str = Field(..., min_length=3, max_length=50)
+    price: float = Field(..., gt=0)
+    in_stock: bool = True
 
 class User(BaseModel):
-    username: str
-    email: str
-    age: int
+    username: str = Field(..., min_length=3, max_length=20, pattern="^[a-zA-Z0-9_]+$")
+    email: EmailStr
+    age: int = Field(..., ge=18, le=100, description="Tuổi của người dùng từ 18 đến 100")
 
 @app.get("/")
 def home():
