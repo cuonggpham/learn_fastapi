@@ -1,7 +1,18 @@
 from typing import Optional
-from fastapi import FastAPI
+from fastapi import FastAPI 
+from pydantic import BaseModel
 
-app = FastAPI()
+app = FastAPI() 
+
+class Product(BaseModel):
+    name: str
+    price: float
+    in_stock: bool 
+
+class User(BaseModel):
+    username: str
+    email: str
+    age: int
 
 @app.get("/")
 def home():
@@ -35,4 +46,16 @@ def get_orders(status: Optional[str] = None):
         # Lọc đơn hàng theo trạng thái
         filtered_orders = [order for order in orders_data if order["status"] == status]
         return {"status": status, "orders": filtered_orders}
-    return {"orders": orders_data}
+    return {"orders": orders_data} 
+
+@app.post("/products")
+def create_product(product: Product):
+    return {"message": "Sản phẩm đã được tạo", 
+            "product": product
+    }
+
+@app.post("/users")
+def create_user(user: User):
+    return {"message": "Người dùng đã được tạo", 
+            "user": user
+    }
