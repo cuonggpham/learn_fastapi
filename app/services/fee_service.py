@@ -1,18 +1,20 @@
-# app/services/fee_service.py
+# services/fee_service.py
 
-from app.schemas.fee import FeeOut
-from app.core.exception import NotFoundException
+from sqlalchemy.orm import Session
+from app.schemas.fee import FeeCreate, FeeUpdate
+from app.repositories import fee_repository
 
-_fake_fees = [
-    {"id": 1, "name": "Phí dịch vụ", "amount": 100000, "description": "Phí vệ sinh và an ninh"},
-    {"id": 2, "name": "Phí quản lý", "amount": 150000, "description": "Phí quản lý vận hành"},
-]
+def get_fees(db: Session):
+    return fee_repository.get_all_fees(db)
 
-async def get_all_fees() -> list[FeeOut]:
-    return [FeeOut(**fee) for fee in _fake_fees]
+def get_fee(db: Session, fee_id: int):
+    return fee_repository.get_fee_by_id(db, fee_id)
 
-async def get_fee_by_id(fee_id: int) -> FeeOut:
-    for fee in _fake_fees:
-        if fee["id"] == fee_id:
-            return FeeOut(**fee)
-    raise NotFoundException(f"Fee with id {fee_id} not found")
+def create_fee(db: Session, fee_data: FeeCreate):
+    return fee_repository.create_fee(db, fee_data)
+
+def update_fee(db: Session, fee_id: int, fee_data: FeeUpdate):
+    return fee_repository.update_fee(db, fee_id, fee_data)
+
+def delete_fee(db: Session, fee_id: int):
+    return fee_repository.delete_fee(db, fee_id)

@@ -1,6 +1,44 @@
-venv/
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Environment variables
+.env
+
+# IDE files
+.vscode/
+.idea/
+
+# macOS
 .DS_Store
-.env 
-*.sqlite3
+
+# MySQL dump or DB temp
+*.sql
+*.db
+
+# Logs
+*.log
+
+# Compiled C files
+*.so
+
+# Migrations (nếu dùng Alembic sau này)
+alembic/versions/
+
+# Pytest cache
+.pytest_cache/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+
+# FastAPI Static/Uploads (nếu có sau này)
+static/
+uploads/
