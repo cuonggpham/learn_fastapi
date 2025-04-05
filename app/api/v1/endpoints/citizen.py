@@ -7,6 +7,9 @@ from app.schemas.citizen import CitizenCreate, CitizenRead, CitizenUpdate
 from app.services.citizen_service import (
     create_citizen, get_all_citizens, get_citizen, update_citizen, delete_citizen
 )
+from app.core.deps import get_current_user
+from app.models.user import User
+
 
 router = APIRouter()
 

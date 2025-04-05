@@ -1,5 +1,9 @@
-async def startup_event():
-    print("✅ App started successfully!")
+from fastapi.middleware.cors import CORSMiddleware
 
-async def shutdown_event():
-    print("👋 App is shutting down...")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Có thể chỉ định ["http://localhost:5173"]
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)

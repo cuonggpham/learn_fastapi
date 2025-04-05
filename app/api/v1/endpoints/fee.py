@@ -7,6 +7,9 @@ from app.schemas import FeeCreate, FeeRead, FeeUpdate
 from app.services.fee_service import (
     create_fee, get_all_fees, get_fee, update_fee, delete_fee
 )
+from app.core.deps import get_current_user
+from app.models.user import User
+
 
 router = APIRouter()
 
