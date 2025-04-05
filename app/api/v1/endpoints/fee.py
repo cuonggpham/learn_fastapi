@@ -1,45 +1,40 @@
-# api/v1/fee.py
+# app/api/v1/endpoints/fee.py
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.schemas.fee import FeeCreate, FeeRead, FeeUpdate, FeeOut
-from app.services import fee_service
 from app.core.database import get_db
-from app.core.exceptions import CustomException, ResourceNotFoundException 
+from app.schemas import FeeCreate, FeeRead, FeeUpdate
+from app.services.fee_service import (
+    create_fee, get_all_fees, get_fee, update_fee, delete_fee
+)
 
-router = APIRouter(prefix="/fees", tags=["Fees"])
-
-@router.get("/", response_model=list[FeeOut])
-def list_fees(db: Session = Depends(get_db)):
-    return fee_service.get_fees(db)
+router = APIRouter()
 
 @router.post("/", response_model=FeeRead)
-def create_fee(fee_in: FeeCreate, db: Session = Depends(get_db)):
-    return {
-        "id": 1,
-        "name": fee_in.name,
-        "amount": fee_in.amount,
-        "description": fee_in.description
-    }
+def create_fee_endpoint(fee_in: FeeCreate, db: Session = Depends(get_db)):
+    return create_fee(db, fee_in)
 
-@router.get("/{fee_id}", response_model=FeeOut)
-def get_fee(fee_id: int, db: Session = Depends(get_db)):
-    fee = fee_service.get_fee(db, fee_id)
+@router.get("/", response_model=list[FeeRead])
+def get_all_fees_endpoint(db: Session = Depends(get_db)):
+    return get_all_fees(db)
+
+@router.get("/{fee_id}", response_model=FeeRead)
+def get_fee_by_id(fee_id: int, db: Session = Depends(get_db)):
+    fee = get_fee(db, fee_id)
     if not fee:
         raise HTTPException(status_code=404, detail="Fee not found")
     return fee
 
-@router.put("/{fee_id}", response_model=FeeOut)
-def update_fee(fee_id: int, fee: FeeUpdate, db: Session = Depends(get_db)):
-    updated = fee_service.update_fee(db, fee_id, fee)
-    if not updated:
+@router.put("/{fee_id}", response_model=FeeRead)
+def update_fee_endpoint(fee_id: int, fee_in: FeeUpdate, db: Session = Depends(get_db)):
+    fee = update_fee(db, fee_id, fee_in)
+    if not fee:
         raise HTTPException(status_code=404, detail="Fee not found")
-    return updated
+    return fee
 
 @router.delete("/{fee_id}")
-def delete_fee(fee_id: int, db: Session = Depends(get_db)):
-    deleted = fee_service.delete_fee(db, fee_id)
-    if not deleted:
+def delete_fee_endpoint(fee_id: int, db: Session = Depends(get_db)):
+    success = delete_fee(db, fee_id)
+    if not success:
         raise HTTPException(status_code=404, detail="Fee not found")
-    return {"message": "Fee deleted"} 
-
+    return {"message": "Fee deleted successfully"}

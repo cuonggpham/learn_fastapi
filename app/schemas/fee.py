@@ -1,29 +1,23 @@
-# schemas/fee.py
+# app/schemas/fee.py
 
+from pydantic import BaseModel
 from typing import Optional
-from pydantic import BaseModel, Field
 
-class FeeCreate(BaseModel):
-    name: str = Field(..., example="Phí dịch vụ")
-    amount: float = Field(..., example=25000.0)
-    description: Optional[str] = Field(None, example="Phí vệ sinh hàng tháng") 
+class FeeBase(BaseModel):
+    name: str
+    amount: float
+    description: Optional[str] = None
 
-class FeeRead(FeeCreate):
-    id: int
-
-    class Config:
-        from_attributes = True
+class FeeCreate(FeeBase):
+    pass
 
 class FeeUpdate(BaseModel):
-    name: str
-    amount: float
-    type: str
+    name: Optional[str] = None
+    amount: Optional[float] = None
+    description: Optional[str] = None
 
-class FeeOut(BaseModel):
+class FeeRead(FeeBase):
     id: int
-    name: str
-    amount: float
-    type: str
 
     class Config:
-        from_attributes = True
+        from_attributes = True 

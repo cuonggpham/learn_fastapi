@@ -2,6 +2,8 @@
 
 from app.core.database import engine, Base
 from app.models.fee import Fee
+from app.models.household import Household
+
 
 def init_db():
     print("Creating tables...")

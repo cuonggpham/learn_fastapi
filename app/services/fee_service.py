@@ -1,20 +1,36 @@
-# services/fee_service.py
+# app/services/fee_service.py
 
 from sqlalchemy.orm import Session
-from app.schemas.fee import FeeCreate, FeeUpdate
-from app.repositories import fee_repository
+from app.models import Fee
+from app.schemas import FeeCreate, FeeUpdate
 
-def get_fees(db: Session):
-    return fee_repository.get_all_fees(db)
+def create_fee(db: Session, fee_in: FeeCreate) -> Fee:
+    fee = Fee(**fee_in.model_dump())
+    db.add(fee)
+    db.commit()
+    db.refresh(fee)
+    return fee
 
-def get_fee(db: Session, fee_id: int):
-    return fee_repository.get_fee_by_id(db, fee_id)
+def get_fee(db: Session, fee_id: int) -> Fee | None:
+    return db.query(Fee).filter(Fee.id == fee_id).first()
 
-def create_fee(db: Session, fee_data: FeeCreate):
-    return fee_repository.create_fee(db, fee_data)
+def get_all_fees(db: Session) -> list[Fee]:
+    return db.query(Fee).all()
 
-def update_fee(db: Session, fee_id: int, fee_data: FeeUpdate):
-    return fee_repository.update_fee(db, fee_id, fee_data)
+def update_fee(db: Session, fee_id: int, fee_in: FeeUpdate) -> Fee | None:
+    fee = get_fee(db, fee_id)
+    if not fee:
+        return None
+    for field, value in fee_in.model_dump(exclude_unset=True).items():
+        setattr(fee, field, value)
+    db.commit()
+    db.refresh(fee)
+    return fee
 
-def delete_fee(db: Session, fee_id: int):
-    return fee_repository.delete_fee(db, fee_id)
+def delete_fee(db: Session, fee_id: int) -> bool:
+    fee = get_fee(db, fee_id)
+    if not fee:
+        return False
+    db.delete(fee)
+    db.commit()
+    return True
