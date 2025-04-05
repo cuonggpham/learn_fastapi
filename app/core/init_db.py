@@ -3,6 +3,10 @@
 from app.core.database import engine, Base
 from app.models.fee import Fee
 from app.models.household import Household
+from app.models.citizen import Citizen 
+from app.models.temporary_absence import TemporaryAbsence
+from app.models.temporary_residence import TemporaryResidence
+from app.models.user import User
 
 
 def init_db():
